@@ -68,8 +68,20 @@ app.post("/vote", (req, res) => {
     res.json({ success: true, msg: "Vote submitted!" });
 });
 
-// START SERVER
-app.listen(5000, () => {
-    console.log("Backend running on http://localhost:5000");
+// ⭐ ADMIN DATA VIEW
+app.get("/data", (req, res) => {
+    const key = req.query.key;
+
+    if (key !== "ADMIN123") {
+        return res.status(403).json({ error: "Access denied" });
+    }
+
+    const data = readData();
+    res.json(data);
 });
 
+// START SERVER
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+    console.log(`Backend running on port ${PORT}`);
+});
