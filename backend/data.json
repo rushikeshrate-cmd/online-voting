@@ -1,0 +1,32 @@
+{
+  "users": [
+    {
+      "email": "rate@gmail.com",
+      "voterId": "2568795"
+    },
+    {
+      "email": "rate@gmail.com",
+      "voterId": "3659986"
+    },
+    {
+      "name": "rushiejsh",
+      "email": "hdfwsbsv@gmail.com",
+      "voterId": "3263598"
+    },
+    {
+      "name": "prashika rate",
+      "email": "pratiksha@gmail.com",
+      "voterId": "3665689"
+    }
+  ],
+  "votes": [
+    {
+      "voterId": "3263598",
+      "candidate": "1"
+    },
+    {
+      "voterId": "3665689",
+      "candidate": "2"
+    }
+  ]
+}

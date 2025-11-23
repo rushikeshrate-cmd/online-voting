@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Indian Online Voting System</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #FF9933 0%, #FFFFFF 50%, #128807 100%);
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 1s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            text-align: center;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 10;
+        }
+        .flag {
+            width: 150px;
+            height: 90px;
+            margin: 0 auto 10px;
+        }
+        h1 {
+            margin: 0;
+            color: #128807;
+            font-size: 1.8em;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+        .container {
+            max-width: 700px;
+            width: 90%;
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin: 100px auto 20px;
+            text-align: center;
+            transition: transform 0.3s;
+        }
+        .container:hover {
+            transform: translateY(-5px);
+        }
+        .page {
+            display: none;
+        }
+        .page.active {
+            display: block;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        input, select {
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        input:focus, select:focus {
+            border-color: #FF9933;
+            outline: none;
+        }
+        button {
+            background: linear-gradient(45deg, #FF9933, #128807);
+            color: white;
+            border: none;
+            padding: 15px;
+            font-size: 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+        }
+        .candidate-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .candidate {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #ddd;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        .candidate:hover {
+            border-color: #FF9933;
+            background: #FFF8E1;
+            transform: translateY(-5px);
+        }
+        .candidate.selected {
+            border-color: #128807;
+            background: #E8F5E8;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .candidate img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            margin-bottom: 10px;
+        }
+        #result {
+            margin-top: 20px;
+            font-weight: bold;
+            color: #128807;
+            font-size: 18px;
+        }
+        footer {
+            margin-top: auto;
+            padding: 15px;
+            background: rgba(0,0,0,0.9);
+            color: white;
+            width: 100%;
+            text-align: center;
+            font-size: 14px;
+        }
+        .nav-btn {
+            background: #128807;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px;
+        }
+        .nav-btn:hover {
+            background: #0d6b0d;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <svg class="flag" viewBox="0 0 600 400" xmlns="http://www.w3.org/2000/svg">
+            <!-- Saffron -->
+            <rect width="600" height="133.33" fill="#FF9933"/>
+            <!-- White -->
+            <rect y="133.33" width="600" height="133.33" fill="#FFFFFF"/>
+            <!-- Green -->
+            <rect y="266.66" width="600" height="133.33" fill="#128807"/>
+            <!-- Ashoka Chakra -->
+            <circle cx="300" cy="200" r="60" fill="none" stroke="#000080" stroke-width="3"/>
+            <circle cx="300" cy="200" r="3" fill="#000080"/>
+            <!-- Spokes -->
+            <line x1="300" y1="140" x2="300" y2="260" stroke="#000080" stroke-width="3"/>
+            <line x1="240" y1="200" x2="360" y2="200" stroke="#000080" stroke-width="3"/>
+            <line x1="255" y1="155" x2="345" y2="245" stroke="#000080" stroke-width="3"/>
+            <line x1="345" y1="155" x2="255" y2="245" stroke="#000080" stroke-width="3"/>
+            <line x1="255" y1="245" x2="345" y2="155" stroke="#000080" stroke-width="3"/>
+            <line x1="345" y1="245" x2="255" y2="155" stroke="#000080" stroke-width="3"/>
+        </svg>
+        <h1>भारत का ऑनलाइन मतदान प्रणाली</h1>
+    </header>
+    
+    <div class="container">
+        <div id="registration" class="page active">
+            <h2>Register to Vote</h2>
+            <p>Join the democratic process! Fill in your details below.</p>
+            <form id="regForm">
+                <input type="text" placeholder="Full Name" required>
+                <input type="email" placeholder="Email Address" required>
+                <input type="text" placeholder="Voter ID Number" required>
+                <select required>
+                    <option value="">Select State</option>
+                    <option value="maharashtra">Maharashtra</option>
+                    <option value="delhi">Delhi</option>
+                    <option value="karnataka">Karnataka</option>
+                    <!-- Add more states as needed -->
+                </select>
+                <input type="date" placeholder="Date of Birth" required>
+                <button type="submit">Register</button>
+            </form>
+            <button class="nav-btn" onclick="showPage('voting')">Already Registered? Go to Voting</button>
+        </div>
+        
+        <div id="voting" class="page">
+            <h2>Select Your Candidate</h2>
+            <p>Choose wisely for India's future.</p>
+            <div class="candidate-grid">
+                <div class="candidate" data-id="1">
+                    <img src="data:image/png;base64,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" alt="Candidate A">
+                    <strong>Candidate A</strong><br>
+                    Party: Blue Pen 
+                </div>
+                <div class="candidate" data-id="2">
+                    <img src="data:image/jpeg;base64,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" alt="Candidate B">
+                    <strong>Candidate B</strong><br>
+                    Party: Football
+                </div>
+                <div class="candidate" data-id="3">
+                    <img src="data:image/jpeg;base64,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" alt="Candidate C">
+                    <strong>Candidate C</strong><br>
+                    Party: Cricket Bat
+                </div>
+            </div>
+            <button id="voteBtn">Cast Your Vote</button>
+            <div id="result"></div>
+            <button class="nav-btn" onclick="showPage('registration')">Back to Registration</button>
+        </div>
+    </div>
+    
+    <footer>
+        <p>&copy; 2023 Indian Voting Demo. For educational purposes only. Real voting requires official systems and security measures.</p>
+    </footer>
+
+<script>
+let selectedCandidate = null;
+const regForm = document.getElementById('regForm');
+const voteBtn = document.getElementById('voteBtn');
+const resultDiv = document.getElementById('result');
+const candidates = document.querySelectorAll('.candidate');
+
+function showPage(pageId) {
+    document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+    document.getElementById(pageId).classList.add('active');
+}
+
+// 1️⃣  REGISTER USER
+regForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const fullName = regForm.elements[0].value;
+    const email = regForm.elements[1].value;
+    const voterId = regForm.elements[2].value;
+    const state = regForm.elements[3].value;
+    const dob = regForm.elements[4].value;
+
+    const data = { name: fullName, email, voterId, state, dob };
+
+    const res = await fetch("http://localhost:5000/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+    });
+
+    const response = await res.json();
+    alert(response.msg);
+
+    if (response.success) {
+        // Save voterId for later (IMPORTANT!)
+        localStorage.setItem("voterId", voterId);
+
+        showPage('voting');
+    }
+});
+
+// 2️⃣ SELECT CANDIDATE
+candidates.forEach(candidate => {
+    candidate.addEventListener('click', () => {
+        candidates.forEach(c => c.classList.remove('selected'));
+        candidate.classList.add('selected');
+        selectedCandidate = candidate.dataset.id;
+    });
+});
+
+// 3️⃣ CAST VOTE
+voteBtn.addEventListener('click', async () => {
+    if (!selectedCandidate) {
+        resultDiv.textContent = "Please select a candidate first!";
+        return;
+    }
+
+    const voterId = localStorage.getItem("voterId");
+
+    const res = await fetch("http://localhost:5000/vote", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            voterId: voterId,
+            candidate: selectedCandidate
+        })
+    });
+
+    const response = await res.json();
+    resultDiv.textContent = response.msg;
+
+    candidates.forEach(c => c.classList.remove('selected'));
+    selectedCandidate = null;
+});
+</script>
+
+</body>
+</html>
