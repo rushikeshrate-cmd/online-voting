@@ -68,16 +68,34 @@ app.post("/vote", (req, res) => {
     res.json({ success: true, msg: "Vote submitted!" });
 });
 
-// ⭐ ADMIN DATA VIEW
+// ADMIN VIEW DATABASE
 app.get("/data", (req, res) => {
     const key = req.query.key;
 
     if (key !== "ADMIN123") {
-        return res.status(403).json({ error: "Access denied" });
+        return res.status(403).json({ error: "Access Denied: Invalid Admin Key" });
     }
 
     const data = readData();
     res.json(data);
+});
+
+// ⭐ RESET DATABASE (ADMIN ONLY)
+app.get("/reset", (req, res) => {
+    const KEY = req.query.key;
+
+    if (KEY !== "ADMIN123") {
+        return res.status(403).json({ success: false, msg: "Access denied!" });
+    }
+
+    const emptyData = {
+        users: [],
+        votes: []
+    };
+
+    saveData(emptyData);
+
+    res.json({ success: true, msg: "Database reset successfully!" });
 });
 
 // START SERVER
